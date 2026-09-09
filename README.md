@@ -53,23 +53,14 @@ Android 默认采用异步下载，避免网络等待阻塞游戏主线程。首
 
 ## 构建
 
-仓库包含构建所需的最小依赖集，克隆后可直接构建：
+Utility 通过固定提交的 Git submodule 与 `ProjectReference` 从源码构建，不再维护公共库 DLL 副本。
 
 ```powershell
+git submodule update --init --recursive
 pwsh -NoProfile -File scripts/build-release.ps1
 ```
 
-输出：`artifacts/release/v6.2.0/GCMod-Android.zip` 和 `SHA256SUMS.txt`。脚本检查版本、归档路径及各文件 SHA-256。
-
-单独编译：
-
-```powershell
-dotnet build GCMod/GCMod.csproj -c Release
-```
-
-使用 .NET 8 SDK（见 `global.json`），目标框架为 `net6.0`。依赖更新及本地完整 Interop 备份的使用方式见 [dependencies/README.md](dependencies/README.md)。
-
-GitHub Actions 在 push / pull request 时构建验证，推送与项目版本一致的 `v*` 标签时发布 ZIP 与校验文件。
+输出位于 `artifacts/release/v<version>/`。本地共享开发目录、依赖升级和 CI 配置见 [docs/BUILDING.md](docs/BUILDING.md)。游戏和加载器编译引用见 [dependencies/README.md](dependencies/README.md)。
 
 ## 代码格式化
 

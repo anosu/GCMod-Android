@@ -6,7 +6,6 @@
 | --- | --- | --- |
 | `interop/assemblies/` | 项目显式引用的最小 IL2CPP 代理程序集集合 | 是 |
 | `melonloader/net6/` | MelonLoader、Harmony、Il2CppInterop.Runtime 编译引用 | 是 |
-| `managed/Utility.dll` | 字体加载及 Toast 库 | 是 |
 | `font/tsukuardgothic-std-bold` | Android 中文字体 AssetBundle | 是 |
 | `interop-backup/` | 完整 Interop 导出及生成清单，仅供本地补充引用 | 否 |
 
@@ -27,12 +26,13 @@ Unity 6 CoreModule 中不完整的 NullableAttribute 通过 `UnityCore` 程序�
 ```powershell
 pwsh -NoProfile -File scripts/sync-dependencies.ps1 `
     -InteropDirectory dependencies/interop-backup `
-    -MelonLoaderDirectory <LemonLoader的net6目录> `
-    -UtilityAssemblyPath <匹配当前Unity代理构建的Utility.dll>
+    -MelonLoaderDirectory <LemonLoader的net6目录>
 
 pwsh -NoProfile -File scripts/build-release.ps1
 ```
 
 源目录不能与对应目标目录相同。同步脚本按照项目引用列表复制 DLL，并清除目标引用目录中未被引用的文件；完整导出应保存在备份目录。更新游戏版本时应整体替换本地备份，避免混用不同版本的 DLL。
 
-也可通过 MSBuild 属性 `GameInteropReferenceDirectory`、`MelonLoaderReferenceDirectory`、`UtilityAssemblyPath` 覆盖默认引用位置。发布脚本始终使用本项目 `dependencies/` 中的 Utility 与字体。
+可通过 `GameInteropReferenceDirectory` 和 `MelonLoaderReferenceDirectory` 覆盖 Mod 的编译引用位置。公共库的源码选择见 [构建说明](../docs/BUILDING.md)。
+
+Utility 改由 `shared/` 中的源码子模块编译，打包使用 Mod 输出目录中的 DLL。它们使用自身固定的编译依赖，不需要复制公共库 DLL，也不依赖完整 Interop 备份。

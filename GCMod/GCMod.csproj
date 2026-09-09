@@ -20,8 +20,6 @@
             >$(DependencyRoot)/melonloader/net6</MelonLoaderReferenceDirectory>
         <GameInteropReferenceDirectory Condition="'$(GameInteropReferenceDirectory)' == ''"
             >$(DependencyRoot)/interop/assemblies</GameInteropReferenceDirectory>
-        <UtilityAssemblyPath Condition="'$(UtilityAssemblyPath)' == ''"
-            >$(DependencyRoot)/managed/Utility.dll</UtilityAssemblyPath>
     </PropertyGroup>
     <ItemGroup>
         <Reference
@@ -86,7 +84,6 @@
             HintPath="$(GameInteropReferenceDirectory)/UnityEngine.UI.dll"
             Private="false"
         />
-        <Reference Include="Utility" HintPath="$(UtilityAssemblyPath)" Private="true" />
     </ItemGroup>
     <Target Name="ValidateLocalDependencies" BeforeTargets="ResolveAssemblyReferences">
         <Error
@@ -94,4 +91,5 @@
             Text="Required dependency is missing: %(Reference.HintPath). See dependencies/README.md."
         />
     </Target>
+    <Import Project="../build/SharedDependencies.props" />
 </Project>
