@@ -1,0 +1,97 @@
+<Project Sdk="Microsoft.NET.Sdk">
+    <PropertyGroup>
+        <TargetFramework>net6.0</TargetFramework>
+        <AssemblyName>GCMod</AssemblyName>
+        <Product>GCMod</Product>
+        <Version>6.2.0</Version>
+        <Authors>Jitsu</Authors>
+        <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+        <LangVersion>latest</LangVersion>
+        <Nullable>disable</Nullable>
+        <ImplicitUsings>disable</ImplicitUsings>
+        <RootNamespace>GCMod</RootNamespace>
+        <OutputPath>bin\$(Configuration)</OutputPath>
+        <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+        <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
+        <DebugType>none</DebugType>
+        <DependencyRoot Condition="'$(DependencyRoot)' == ''"
+            >$(MSBuildProjectDirectory)/../dependencies</DependencyRoot>
+        <MelonLoaderReferenceDirectory Condition="'$(MelonLoaderReferenceDirectory)' == ''"
+            >$(DependencyRoot)/melonloader/net6</MelonLoaderReferenceDirectory>
+        <GameInteropReferenceDirectory Condition="'$(GameInteropReferenceDirectory)' == ''"
+            >$(DependencyRoot)/interop/assemblies</GameInteropReferenceDirectory>
+        <UtilityAssemblyPath Condition="'$(UtilityAssemblyPath)' == ''"
+            >$(DependencyRoot)/managed/Utility.dll</UtilityAssemblyPath>
+    </PropertyGroup>
+    <ItemGroup>
+        <Reference
+            Include="0Harmony"
+            HintPath="$(MelonLoaderReferenceDirectory)/0Harmony.dll"
+            Private="false"
+        />
+        <Reference
+            Include="Il2CppInterop.Runtime"
+            HintPath="$(MelonLoaderReferenceDirectory)/Il2CppInterop.Runtime.dll"
+            Private="false"
+        />
+        <Reference
+            Include="MelonLoader"
+            HintPath="$(MelonLoaderReferenceDirectory)/MelonLoader.dll"
+            Private="false"
+        />
+        <Reference
+            Include="Assembly-CSharp"
+            HintPath="$(GameInteropReferenceDirectory)/Assembly-CSharp.dll"
+            Private="false"
+        />
+        <Reference
+            Include="Il2Cppmscorlib"
+            HintPath="$(GameInteropReferenceDirectory)/Il2Cppmscorlib.dll"
+            Private="false"
+        />
+        <Reference
+            Include="Unity.TextMeshPro"
+            HintPath="$(GameInteropReferenceDirectory)/Unity.TextMeshPro.dll"
+            Private="false"
+        />
+        <!-- Unity 6 unstripping exposes an incomplete System.NullableAttribute; keep it out of the global compiler namespace. -->
+        <Reference
+            Include="UnityEngine.CoreModule"
+            HintPath="$(GameInteropReferenceDirectory)/UnityEngine.CoreModule.dll"
+            Aliases="UnityCore"
+            Private="false"
+        />
+        <Reference
+            Include="UnityEngine.AssetBundleModule"
+            HintPath="$(GameInteropReferenceDirectory)/UnityEngine.AssetBundleModule.dll"
+            Private="false"
+        />
+        <Reference
+            Include="UnityEngine.IMGUIModule"
+            HintPath="$(GameInteropReferenceDirectory)/UnityEngine.IMGUIModule.dll"
+            Private="false"
+        />
+        <Reference
+            Include="UnityEngine.TextRenderingModule"
+            HintPath="$(GameInteropReferenceDirectory)/UnityEngine.TextRenderingModule.dll"
+            Private="false"
+        />
+        <Reference
+            Include="UnityEngine.UIModule"
+            HintPath="$(GameInteropReferenceDirectory)/UnityEngine.UIModule.dll"
+            Private="false"
+        />
+        <Reference
+            Include="UnityEngine.UI"
+            HintPath="$(GameInteropReferenceDirectory)/UnityEngine.UI.dll"
+            Private="false"
+        />
+        <Reference Include="Utility" HintPath="$(UtilityAssemblyPath)" Private="true" />
+    </ItemGroup>
+    <Target Name="ValidateLocalDependencies" BeforeTargets="ResolveAssemblyReferences">
+        <Error
+            Condition="'%(Reference.HintPath)' != '' And !Exists('%(Reference.HintPath)')"
+            Text="Required dependency is missing: %(Reference.HintPath). See dependencies/README.md."
+        />
+    </Target>
+</Project>

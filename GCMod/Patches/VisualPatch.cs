@@ -1,0 +1,140 @@
+extern alias UnityCore;
+using UnityCore::UnityEngine;
+using HarmonyLib;
+
+using Il2CppDMM.OLG.Unity.Extensions.Novel;
+using Il2CppTMPro;
+using UnityEngine.UI;
+
+namespace GCMod.Patches;
+
+/// <summary>
+/// 视觉补丁：字体替换、文本样式修改、对话框透明度控制。
+/// </summary>
+[HarmonyPatch]
+public static class VisualPatch
+{
+    public static Image NormalFrame;
+    public static Image CgModeFrame;
+    public static Image BaseNameFrame;
+    public static TMP_FontAsset OriginalFontAsset;
+
+    /// <summary>默认样式常量。</summary>
+    private static class Defaults
+    {
+        public static readonly Color NameColor = new(0.957f, 0.957f, 0.914f);
+        public const float FaceDilate = 0f;
+        public const float OutlineWidth = 0f;
+        public const float OutlineSoftness = 0f;
+    }
+
+    private static void ApplyImageAlpha(Image image, float alpha)
+    {
+        if (image == null)
+            return;
+        var color = image.color;
+        color.a = alpha;
+        image.color = color;
+    }
+
+    /// <summary>
+    /// 应用自定义文本样式（颜色、描边、间距）。
+    /// </summary>
+    public static void ApplyTextStyle(TextMeshProUGUI text, Color color)
+    {
+        text.color = color;
+        text.fontMaterial.EnableKeyword("OUTLINE_ON");
+        text.fontMaterial.SetFloat("_FaceDilate", Config.FaceDilate.Value);
+        text.fontMaterial.SetColor("_OutlineColor", Config.OutlineColor);
+        text.fontMaterial.SetFloat("_OutlineWidth", Config.OutlineWidth.Value);
+        text.fontMaterial.SetFloat("_OutlineSoftness", Config.OutlineSoftness.Value);
+    }
+
+    /// <summary>
+    /// 还原文本到默认样式。
+    /// </summary>
+    public static void ResetTextStyle(TextMeshProUGUI text, Color color)
+    {
+        text.color = color;
+        text.fontMaterial.SetFloat("_FaceDilate", Defaults.FaceDilate);
+        text.fontMaterial.SetColor("_OutlineColor", Color.black);
+        text.fontMaterial.SetFloat("_OutlineWidth", Defaults.OutlineWidth);
+        text.fontMaterial.SetFloat("_OutlineSoftness", Defaults.OutlineSoftness);
+        text.fontMaterial.DisableKeyword("OUTLINE_ON");
+    }
+
+    /// <summary>
+    /// 标题字体替换。
+    /// </summary>
+    [HarmonyPostfix]
+    [HarmonyPatch(typeof(EventTitle), nameof(EventTitle.ShowBlurEffect))]
+    public static void SetMessageTitleFont(EventTitle __instance)
+    {
+        if (PatchManager.TryGetCurrentNovel(out _))
+            PatchManager.ApplyTranslationFont(__instance._TitleMain);
+    }
+
+    /// <summary>
+    /// 人名字体替换 + 文本样式应用。
+    /// </summary>
+    [HarmonyPostfix]
+    [HarmonyPatch(typeof(EventMessage), nameof(EventMessage.SetName))]
+    public static void SetMessageNameFont(EventMessage __instance)
+    {
+        if (PatchManager.TryGetCurrentNovel(out _))
+            PatchManager.ApplyTranslationFont(__instance.MessageName);
+
+        if (Config.ModifyText.Value)
+            ApplyTextStyle(__instance.MessageName, Config.NameTextColor);
+        else
+            ResetTextStyle(__instance.MessageName, Defaults.NameColor);
+    }
+
+    /// <summary>
+    /// 对话文本字体替换 + 样式应用。
+    /// </summary>
+    [HarmonyPostfix]
+    [HarmonyPatch(typeof(EventText), nameof(EventText.SetRuby))]
+    public static void SetMessageTextFont(
+        GameObject go,
+        EventText.Letter letter,
+        TextMeshProUGUI text
+    )
+    {
+        if (PatchManager.TryGetCurrentNovel(out _))
+            PatchManager.ApplyTranslationFont(text);
+
+        if (Config.ModifyText.Value)
+            ApplyTextStyle(text, Config.MessageTextColor);
+    }
+
+    /// <summary>
+    /// 保存对话框背景图像引用，初始化透明度。
+    /// </summary>
+    [HarmonyPostfix]
+    [HarmonyPatch(typeof(EventMessage), nameof(EventMessage.Init))]
+    public static void SaveTextBackground(EventMessage __instance)
+    {
+        foreach (Image image in __instance.GetComponentsInChildren<Image>())
+        {
+            if (image.name == "Normal")
+            {
+                ApplyImageAlpha(image, Config.NormalAlpha.Value);
+                NormalFrame = image;
+            }
+            if (image.name == "MessageWindow")
+            {
+                ApplyImageAlpha(image, Config.CgModeAlpha.Value);
+                CgModeFrame = image;
+            }
+        }
+        foreach (Image image in __instance.NameImage.GetComponentsInChildren<Image>())
+        {
+            if (image.name == "BaseName")
+            {
+                ApplyImageAlpha(image, Config.NormalAlpha.Value);
+                BaseNameFrame = image;
+            }
+        }
+    }
+}

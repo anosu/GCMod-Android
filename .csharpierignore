@@ -1,0 +1,5 @@
+dependencies/
+artifacts/
+.build-check/
+**/bin/
+**/obj/

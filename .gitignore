@@ -1,0 +1,20 @@
+# IDE state
+.vs/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# Build and release output
+**/bin/
+**/obj/
+artifacts/
+.build-check/
+
+# Full local Interop export; only required references belong in Git
+/dependencies/interop-backup/
+
+# Local packages and logs
+*.nupkg
+*.snupkg
+*.log
