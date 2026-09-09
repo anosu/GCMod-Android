@@ -5,3 +5,4 @@ artifacts/
 **/obj/
 shared/
 SharedDependencies.local.props
+*.local.slnx

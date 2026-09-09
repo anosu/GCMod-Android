@@ -1,3 +1,4 @@
 <Solution>
     <Project Path="GCMod/GCMod.csproj" />
+    <Project Path="shared/Utility/Utility/Utility.csproj" />
 </Solution>

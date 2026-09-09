@@ -23,3 +23,5 @@ artifacts/
 /SharedDependencies.local.props
 /dependencies/managed/Utility.dll
 /dependencies/managed/Extension.dll
+# Visual Studio solution containing machine-local shared project paths
+/*.local.slnx
