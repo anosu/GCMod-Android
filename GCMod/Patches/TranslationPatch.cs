@@ -1,4 +1,3 @@
-using System.Threading.Tasks;
 using HarmonyLib;
 using Il2CppDMM.OLG.Unity.Engine.Internal;
 using Il2CppDMM.OLG.Unity.Extensions.Novel;
@@ -18,24 +17,14 @@ public static class TranslationPatch
     [HarmonyPatch(typeof(ScriptObjectManager), nameof(ScriptObjectManager.Create))]
     public static void SetupTranslation(string prefix, string id)
     {
-        if (!Config.Translation.Value)
-            return;
-
         Logger.Info($"Prefix: {prefix}, Id: {id}");
         if (!int.TryParse(id, out int novelId))
         {
-            PatchManager.NovelId = 0;
+            Core.Trans.PrepareNovel(0);
             Logger.Warn($"Unsupported novel ID: {id}");
             return;
         }
-        PatchManager.NovelId = novelId;
-
-        if (!Core.Trans.Novels.ContainsKey(PatchManager.NovelId))
-        {
-            Task task = Core.Trans.GetNovelTranslationAsync(novelId);
-            if (!Config.AsyncMode.Value)
-                task.GetAwaiter().GetResult();
-        }
+        Core.Trans.PrepareNovel(novelId);
     }
 
     /// <summary>

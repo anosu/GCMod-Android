@@ -39,6 +39,7 @@ namespace GCMod
         public static MelonPreferences_Entry<string> TranslationCDN;
         public static MelonPreferences_Entry<string> TranslationLanguage;
         public static MelonPreferences_Entry<bool> AsyncMode;
+        public static MelonPreferences_Entry<string[]> MasterDataTables;
         #endregion
 
         #region Font
@@ -72,6 +73,8 @@ namespace GCMod
                 BindAllEntries();
                 foreach (var category in Categories.Values)
                     category.LoadFromFile(false);
+                if (TranslationLanguage.Value == "zh_Hans")
+                    TranslationLanguage.Value = "zh-Hans";
                 BindColorEntries();
                 foreach (var category in Categories.Values)
                     category.SaveToFile(false);
@@ -98,24 +101,35 @@ namespace GCMod
             #endregion
 
             #region Translation
-            Translation = Bind("Translation", "Enabled", true, "是否开启游戏内剧情翻译");
+            Translation = Bind(
+                "Translation",
+                "Enabled",
+                true,
+                "是否开启游戏内翻译（剧情与主数据）"
+            );
             TranslationCDN = Bind(
                 "Translation",
                 "CDN",
-                "https://raw.githubusercontent.com/anosu/girlscreaionr-translation/refs/heads/main",
-                "翻译加载的CDN"
+                "https://raw.githubusercontent.com/anosu/girlscreation-translation/refs/heads/main",
+                "翻译仓库或本地服务的根地址，自动拼接 /translations/<Language>/"
             );
             TranslationLanguage = Bind(
                 "Translation",
                 "Language",
-                "zh_Hans",
-                "翻译语言，取值范围：[zh_Hans]"
+                "zh-Hans",
+                "翻译语言，取值范围：[zh-Hans]"
             );
             AsyncMode = Bind(
                 "Translation",
                 "AsyncMode",
                 true,
-                "异步请求翻译（不会造成加载界面卡顿，但翻译可能延迟显示）"
+                "异步请求剧情翻译；关闭时最多等待 10 秒。主数据无缓存时始终最多等待 10 秒，超时保留原文并继续后台加载"
+            );
+            MasterDataTables = Bind(
+                "Translation.MasterData",
+                "EnabledTables",
+                new[] { "*" },
+                "启用翻译的主数据表名数组；默认 [\"*\"] 全部开启，[] 全部关闭。区分大小写，修改后重启生效"
             );
             #endregion
 

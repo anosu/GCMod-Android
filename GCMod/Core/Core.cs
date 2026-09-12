@@ -71,17 +71,23 @@ public sealed class Core : MelonMod
             _httpClient.DefaultRequestHeaders.UserAgent.ParseAdd(
                 $"{ModInfo.Name}/{ModInfo.Version}"
             );
-            var cache = new TranslationCache(
-                Config.TranslationCDN.Value,
-                Path.Combine(MelonEnvironment.UserDataDirectory, "GCMod", "cache"),
-                Config.TranslationLanguage.Value,
-                _httpClient
-            );
+            TranslationCache CreateCache() =>
+                new(
+                    Config.TranslationCDN.Value,
+                    Path.Combine(MelonEnvironment.UserDataDirectory, "GCMod", "translations"),
+                    Config.TranslationLanguage.Value,
+                    _httpClient
+                );
             string fontPath = Config.FontBundlePath.Value;
             if (!Path.IsPathRooted(fontPath))
                 fontPath = Path.Combine(MelonEnvironment.UserDataDirectory, fontPath);
-            Trans = new TranslationManager(cache, new AssetBundleLoader<TMP_FontAsset>(fontPath));
+            Trans = new TranslationManager(
+                CreateCache,
+                new AssetBundleLoader<TMP_FontAsset>(fontPath)
+            );
             Trans.Initialize();
+            MasterDataPatch.JsonRewriter = (attribute, json) =>
+                Trans.TranslateMasterData(attribute?.Object, json);
             PatchManager.Initialize();
             Logger.Info($"{ModInfo.Name} {ModInfo.Version} loaded successfully");
             Toast.Success(ModInfo.Name, $"Mod 加载成功，版本: {ModInfo.Version}", duration: 7f);
@@ -98,8 +104,13 @@ public sealed class Core : MelonMod
 
     private static void Shutdown()
     {
-        PatchManager.Shutdown();
-        Trans?.Shutdown();
+        if (!PatchManager.Shutdown())
+        {
+            Logger.Warn("Shutdown deferred: master data load is still active");
+            return;
+        }
+        MasterDataPatch.JsonRewriter = null;
+        Trans?.Dispose();
         _httpClient?.Dispose();
         _httpClient = null;
         Toast.Shutdown();

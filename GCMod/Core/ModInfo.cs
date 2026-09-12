@@ -4,6 +4,6 @@ namespace GCMod;
 public static class ModInfo
 {
     public const string Name = "GCMod";
-    public const string Version = "6.2.0";
+    public const string Version = "7.0.0";
     public const string Author = "Jitsu";
 }

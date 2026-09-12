@@ -11,9 +11,6 @@ public static class PatchManager
 {
     private static HarmonyLib.Harmony _harmony;
 
-    /// <summary>当前加载的剧情 Novel ID。</summary>
-    public static int NovelId;
-
     /// <summary>
     /// 创建并注册所有 Harmony 补丁。
     /// </summary>
@@ -24,14 +21,16 @@ public static class PatchManager
         _harmony.PatchAll(typeof(EnhancePatch));
         _harmony.PatchAll(typeof(TranslationPatch));
         _harmony.PatchAll(typeof(VisualPatch));
-        _harmony.PatchAll(typeof(HomePatch));
+        MasterDataPatch.Install();
     }
 
-    public static void Shutdown()
+    public static bool Shutdown()
     {
+        if (!MasterDataPatch.TryUninstall())
+            return false;
         _harmony?.UnpatchSelf();
         _harmony = null;
-        NovelId = 0;
+        return true;
     }
 
     /// <summary>
@@ -40,7 +39,8 @@ public static class PatchManager
     public static bool TryGetCurrentNovel(out Dictionary<string, string> translation)
     {
         translation = null;
-        return Config.Translation.Value && Core.Trans.Novels.TryGetValue(NovelId, out translation);
+        return Config.Translation.Value
+            && Core.Trans.TryGetNovelTranslation(Core.Trans.CurrentNovelId, out translation);
     }
 
     /// <summary>
