@@ -73,8 +73,6 @@ namespace GCMod
                 BindAllEntries();
                 foreach (var category in Categories.Values)
                     category.LoadFromFile(false);
-                if (TranslationLanguage.Value == "zh_Hans")
-                    TranslationLanguage.Value = "zh-Hans";
                 BindColorEntries();
                 foreach (var category in Categories.Values)
                     category.SaveToFile(false);
@@ -137,7 +135,7 @@ namespace GCMod
             FontBundlePath = Bind(
                 "Translation.Font",
                 "AssetBundlePath",
-                "GCMod/tsukuardgothic-std-bold",
+                "GCMod/tsukuardgothic-std-medium",
                 "TMP字体AssetBundle路径，相对于MelonLoader/UserData，也可使用绝对路径；修改后重启生效"
             );
             #endregion

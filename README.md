@@ -24,12 +24,12 @@ MelonLoader/
 │   ├── GCMod.dll
 │   └── Utility.dll
 └── UserData/GCMod/
-    └── tsukuardgothic-std-bold
+    └── tsukuardgothic-std-medium
 ```
 
 首次运行生成 `UserData/GCMod.cfg`；翻译缓存位于 `UserData/GCMod/translations/zh-Hans/`。具体 base 目录以加载器日志为准。Android 路径区分大小写，请保留字体文件名的小写形式。
 
-从旧版升级时，配置中的 `zh_Hans` 自动改为 `zh-Hans`。旧 `cache` 目录保留，新版使用新的翻译结构重新下载；也可以提前将新仓库的 `translations/zh-Hans/` 放入上述缓存目录。
+旧 `cache` 目录保留，新版使用新的翻译结构重新下载；也可以提前将新仓库的 `translations/zh-Hans/` 放入上述缓存目录。
 
 ## 配置
 
@@ -42,7 +42,7 @@ MelonLoader/
 | Translation | Language | zh-Hans | 翻译语言 |
 | Translation | AsyncMode | true | 后台下载；首次进入剧情时翻译可能延迟显示 |
 | Translation.MasterData | EnabledTables | ["*"] | 全部表开启；指定表名数组可限制范围，[] 全部关闭 |
-| Translation.Font | AssetBundlePath | GCMod/tsukuardgothic-std-bold | 相对于 UserData，也支持绝对路径 |
+| Translation.Font | AssetBundlePath | GCMod/tsukuardgothic-std-medium | 相对于 UserData，也支持绝对路径 |
 | Message.Window | NormalAlpha / CgModeAlpha | 0 / 0 | 普通 / CG 对话框透明度，范围 0–1 |
 | Message.Text | Modified | true | 修改文本样式 |
 | Message.Text | NameColor / MessageColor | FFFFFFFF | 人物名 / 消息文本颜色 |

@@ -6,7 +6,7 @@
 | --- | --- | --- |
 | `interop/assemblies/` | 项目显式引用的最小 IL2CPP 代理程序集集合 | 是 |
 | `melonloader/net6/` | MelonLoader、Harmony、Il2CppInterop.Runtime 编译引用 | 是 |
-| `font/tsukuardgothic-std-bold` | Android 中文字体 AssetBundle | 是 |
+| `font/tsukuardgothic-std-medium` | Android 中文字体 AssetBundle | 是 |
 | `interop-backup/` | 完整 Interop 导出及生成清单，仅供本地补充引用 | 否 |
 
 当前依赖适配 Unity 6000.3.8f1、MelonLoader 0.7.3.0、Harmony 2.10.2.0 和 Il2CppInterop 1.5.1。加载器与游戏代理仅用于编译，不放入模组发布包。

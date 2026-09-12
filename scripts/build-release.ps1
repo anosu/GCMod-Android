@@ -17,7 +17,7 @@ $modProject = Join-Path $repoRoot "GCMod/GCMod.csproj"
 $dependencyRoot = Join-Path $repoRoot "dependencies"
 $interopDirectory = Join-Path $dependencyRoot "interop/assemblies"
 $melonLoaderDirectory = Join-Path $dependencyRoot "melonloader/net6"
-$fontBundle = Join-Path $dependencyRoot "font/tsukuardgothic-std-bold"
+$fontBundle = Join-Path $dependencyRoot "font/tsukuardgothic-std-medium"
 $utilityAssembly = Join-Path ([IO.Path]::GetDirectoryName($modProject)) "bin/$Configuration/Utility.dll"
 $dotnet = (Get-Command dotnet -ErrorAction Stop).Source
 
@@ -171,7 +171,7 @@ if (-not $outputDirectory.StartsWith($releaseRoot + [System.IO.Path]::DirectoryS
 $inputs = [ordered]@{
     "Mods/GCMod/GCMod.dll" = $modAssembly
     "Mods/GCMod/Utility.dll" = $utilityAssembly
-    "UserData/GCMod/tsukuardgothic-std-bold" = $fontBundle
+    "UserData/GCMod/tsukuardgothic-std-medium" = $fontBundle
 }
 
 New-Item -ItemType Directory -Path $outputDirectory -Force | Out-Null
