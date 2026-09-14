@@ -74,10 +74,10 @@ Utility 通过固定提交的 Git submodule 与 `ProjectReference` 从源码构�
 
 ```powershell
 git submodule update --init --recursive
-pwsh -NoProfile -File scripts/build-release.ps1
+python shared/ModEngineering/scripts/project.py package
 ```
 
-输出位于 `artifacts/release/v<version>/`。本地共享开发目录、依赖升级和 CI 配置见 [docs/BUILDING.md](docs/BUILDING.md)。游戏和加载器编译引用见 [dependencies/README.md](dependencies/README.md)。
+输出位于 `artifacts/release/v<version>/`。本地共享开发目录、依赖升级和 CI 配置见 [shared/ModEngineering/docs/CONVENTIONS.md](https://github.com/anosu/ModEngineering/blob/main/docs/CONVENTIONS.md)。游戏和加载器编译引用见 [dependencies/README.md](dependencies/README.md)。
 
 翻译逻辑的独立回归测试：
 
@@ -104,6 +104,6 @@ dotnet tool run csharpier check .
 
 CI 在构建前执行格式检查。规则为 4 空格缩进、100 列换行宽度和 LF 换行；依赖、本地备份及构建产物通过 `.csharpierignore` 排除。编辑器基础规则由 `.editorconfig` 提供。
 
-## 统一工程入口
+## 开发
 
-源码已迁移到 `src/`，独立测试位于 `tests/`。构建、VS 联调和发布方式以 [docs/BUILDING.md](docs/BUILDING.md) 为准；项目差异配置在 `mod.json`，公共实现来自固定的 `shared/ModEngineering`。
+源码位于 `src/`，测试位于 `tests/`。项目配置由 `.csproj` 管理，依赖版本由 Git 子模块记录。构建、VS 联调和发布命令见[公共工程说明](https://github.com/anosu/ModEngineering/blob/main/docs/CONVENTIONS.md)。

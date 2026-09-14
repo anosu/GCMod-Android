@@ -24,20 +24,20 @@ Unity 6 CoreModule 中不完整的 NullableAttribute 通过 `UnityCore` 程序�
 游戏或加载器更新后，使用匹配版本的完整导出更新本地备份，再同步项目声明的最小引用集：
 
 ```powershell
-pwsh -NoProfile -File scripts/sync-dependencies.ps1 `
+pwsh -NoProfile -File shared/ModEngineering/scripts/sync-dependencies.ps1 -RepositoryRoot . `
     -InteropDirectory dependencies/interop-backup `
     -MelonLoaderDirectory <LemonLoader的net6目录>
 
-pwsh -NoProfile -File scripts/build-release.ps1
+python shared/ModEngineering/scripts/project.py package
 ```
 
 源目录不能与对应目标目录相同。同步脚本按照项目引用列表复制 DLL，并清除目标引用目录中未被引用的文件；完整导出应保存在备份目录。更新游戏版本时应整体替换本地备份，避免混用不同版本的 DLL。
 
-可通过 `GameInteropReferenceDirectory` 和 `MelonLoaderReferenceDirectory` 覆盖 Mod 的编译引用位置。公共库的源码选择见 [构建说明](../docs/BUILDING.md)。
+可通过 `GameInteropReferenceDirectory` 和 `MelonLoaderReferenceDirectory` 覆盖 Mod 的编译引用位置。公共库的源码选择见 [构建说明](https://github.com/anosu/ModEngineering/blob/main/docs/CONVENTIONS.md)。
 
 ## 共享库
 
-Utility 通过 `shared/Utility` 源码子模块和 `ProjectReference` 构建。更新共享库时更新源码和子模块指针，或使用本地源码覆盖配置，具体见 [构建说明](../docs/BUILDING.md)。
+Utility 通过 `shared/Utility` 源码子模块和 `ProjectReference` 构建。更新共享库时更新源码和子模块指针，或使用本地源码覆盖配置，具体见 [构建说明](https://github.com/anosu/ModEngineering/blob/main/docs/CONVENTIONS.md)。
 
 构建会自动将共享库 DLL 复制到 Mod 输出目录，发布脚本从该目录打包。`dependencies/managed/` 已废弃，不参与编译或打包，整目录忽略 Git；旧克隆中的该目录可直接删除，无需重新复制 DLL。
 
