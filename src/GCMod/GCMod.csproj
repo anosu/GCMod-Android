@@ -1,5 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
+        <GenerateModVersion>true</GenerateModVersion>
         <TargetFramework>net6.0</TargetFramework>
         <AssemblyName>GCMod</AssemblyName>
         <Product>GCMod</Product>
@@ -10,12 +11,11 @@
         <Nullable>disable</Nullable>
         <ImplicitUsings>disable</ImplicitUsings>
         <RootNamespace>GCMod</RootNamespace>
-        <OutputPath>bin\$(Configuration)</OutputPath>
         <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
         <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
         <DebugType>none</DebugType>
         <DependencyRoot Condition="'$(DependencyRoot)' == ''"
-            >$(MSBuildProjectDirectory)/../dependencies</DependencyRoot>
+            >$(ModRepositoryRoot)dependencies</DependencyRoot>
         <MelonLoaderReferenceDirectory Condition="'$(MelonLoaderReferenceDirectory)' == ''"
             >$(DependencyRoot)/melonloader/net6</MelonLoaderReferenceDirectory>
         <GameInteropReferenceDirectory Condition="'$(GameInteropReferenceDirectory)' == ''"
@@ -85,11 +85,5 @@
             Private="false"
         />
     </ItemGroup>
-    <Target Name="ValidateLocalDependencies" BeforeTargets="ResolveAssemblyReferences">
-        <Error
-            Condition="'%(Reference.HintPath)' != '' And !Exists('%(Reference.HintPath)')"
-            Text="Required dependency is missing: %(Reference.HintPath). See dependencies/README.md."
-        />
-    </Target>
-    <Import Project="../build/SharedDependencies.props" />
+    <Import Project="$(ModRepositoryRoot)build/SharedDependencies.props" />
 </Project>

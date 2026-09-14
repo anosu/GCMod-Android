@@ -16,7 +16,7 @@ Unity 6 CoreModule 中不完整的 NullableAttribute 通过 `UnityCore` 程序�
 ## 补充引用
 
 1. 在本地将完整 Interop 导出保存到 `dependencies/interop-backup/`，包括生成清单（如有）。该目录已加入 `.gitignore`，克隆仓库时不会下载。
-2. 需要引用新的游戏程序集时，将对应 DLL 从备份复制到 `dependencies/interop/assemblies/`，并在 `GCMod/GCMod.csproj` 添加带 `GameInteropReferenceDirectory` 路径的显式 `Reference`，设置 `Private="false"`。
+2. 需要引用新的游戏程序集时，将对应 DLL 从备份复制到 `dependencies/interop/assemblies/`，并在 `src/GCMod/GCMod.csproj` 添加带 `GameInteropReferenceDirectory` 路径的显式 `Reference`，设置 `Private="false"`。
 3. 运行发布构建验证，将项目文件和新增的必要 DLL 一起提交。构建不得依赖备份目录。
 
 ## 更新依赖

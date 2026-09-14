@@ -82,7 +82,7 @@ pwsh -NoProfile -File scripts/build-release.ps1
 翻译逻辑的独立回归测试：
 
 ```sh
-dotnet test GCMod.Tests/GCMod.Tests.csproj -c Release
+dotnet test tests/GCMod.Tests/GCMod.Tests.csproj -c Release
 ```
 
 测试隔离了 Unity/Harmony 宿主；ARM64 原生钩子仍需在游戏中验证。安装成功时日志输出 `MasterDataPatch installed`，实际替换时输出 `Master data translated: <表名>`。
@@ -103,3 +103,7 @@ dotnet tool run csharpier check .
 ```
 
 CI 在构建前执行格式检查。规则为 4 空格缩进、100 列换行宽度和 LF 换行；依赖、本地备份及构建产物通过 `.csharpierignore` 排除。编辑器基础规则由 `.editorconfig` 提供。
+
+## 统一工程入口
+
+源码已迁移到 `src/`，独立测试位于 `tests/`。构建、VS 联调和发布方式以 [docs/BUILDING.md](docs/BUILDING.md) 为准；项目差异配置在 `mod.json`，公共实现来自固定的 `shared/ModEngineering`。
