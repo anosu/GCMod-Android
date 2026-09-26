@@ -1,65 +1,14 @@
 <Project Sdk="Microsoft.NET.Sdk">
     <Import Project="$(ModRepositoryRoot)shared/ModEngineering/build/Android.props" />
     <PropertyGroup>
-        <AssemblyName>GCMod</AssemblyName>
-        <Product>GCMod</Product>
         <Version>7.0.0</Version>
         <Authors>Jitsu</Authors>
         <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
         <Nullable>disable</Nullable>
-        <ImplicitUsings>disable</ImplicitUsings>
-        <RootNamespace>GCMod</RootNamespace>
+        <!-- Unity 6 exposes an incomplete NullableAttribute in CoreModule. -->
+        <UseUnityCoreAlias>true</UseUnityCoreAlias>
         <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
     </PropertyGroup>
-    <ItemGroup>
-        <Reference
-            Include="Assembly-CSharp"
-            HintPath="$(GameInteropReferenceDirectory)/Assembly-CSharp.dll"
-            Private="false"
-        />
-        <Reference
-            Include="Il2Cppmscorlib"
-            HintPath="$(GameInteropReferenceDirectory)/Il2Cppmscorlib.dll"
-            Private="false"
-        />
-        <Reference
-            Include="Unity.TextMeshPro"
-            HintPath="$(GameInteropReferenceDirectory)/Unity.TextMeshPro.dll"
-            Private="false"
-        />
-        <!-- Unity 6 unstripping exposes an incomplete System.NullableAttribute; keep it out of the global compiler namespace. -->
-        <Reference
-            Include="UnityEngine.CoreModule"
-            HintPath="$(GameInteropReferenceDirectory)/UnityEngine.CoreModule.dll"
-            Aliases="UnityCore"
-            Private="false"
-        />
-        <Reference
-            Include="UnityEngine.AssetBundleModule"
-            HintPath="$(GameInteropReferenceDirectory)/UnityEngine.AssetBundleModule.dll"
-            Private="false"
-        />
-        <Reference
-            Include="UnityEngine.IMGUIModule"
-            HintPath="$(GameInteropReferenceDirectory)/UnityEngine.IMGUIModule.dll"
-            Private="false"
-        />
-        <Reference
-            Include="UnityEngine.TextRenderingModule"
-            HintPath="$(GameInteropReferenceDirectory)/UnityEngine.TextRenderingModule.dll"
-            Private="false"
-        />
-        <Reference
-            Include="UnityEngine.UIModule"
-            HintPath="$(GameInteropReferenceDirectory)/UnityEngine.UIModule.dll"
-            Private="false"
-        />
-        <Reference
-            Include="UnityEngine.UI"
-            HintPath="$(GameInteropReferenceDirectory)/UnityEngine.UI.dll"
-            Private="false"
-        />
-    </ItemGroup>
     <Import Project="$(ModRepositoryRoot)shared/ModEngineering/build/SharedDependencies.props" />
     <Target Name="CollectExtraPackageFiles" BeforeTargets="GetModPackageFiles">
         <ItemGroup>
