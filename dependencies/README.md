@@ -7,7 +7,7 @@
 | `interop/assemblies/` | 项目显式引用的最小 IL2CPP 代理程序集集合 | 是 |
 | `melonloader/net6/` | MelonLoader、Harmony、Il2CppInterop.Runtime 编译引用 | 是 |
 | `font/tsukuardgothic-std-medium` | Android 中文字体 AssetBundle | 是 |
-| `interop-backup/` | 完整 Interop 导出及生成清单，仅供本地补充引用 | 否 |
+| `interop-backup/` | 完整 Interop 导出及生成清单，仅供本地补充引用 | 仅占位文件 |
 
 当前依赖适配 Unity 6000.3.8f1、MelonLoader 0.7.3.0、Harmony 2.10.2.0 和 Il2CppInterop 1.5.1。加载器与游戏代理仅用于编译，不放入模组发布包。
 
@@ -31,7 +31,7 @@ pwsh -NoProfile -File shared/ModEngineering/scripts/sync-dependencies.ps1 -Repos
 python shared/ModEngineering/scripts/project.py package
 ```
 
-源目录不能与对应目标目录相同。同步脚本按照项目引用列表复制 DLL，并清除目标引用目录中未被引用的文件；完整导出应保存在备份目录。更新游戏版本时应整体替换本地备份，避免混用不同版本的 DLL。
+源目录不能与对应目标目录相同。同步脚本按照项目引用列表复制 DLL；不再引用的旧 DLL 需单独清理；完整导出应保存在备份目录。更新游戏版本时应整体替换本地备份，避免混用不同版本的 DLL。
 
 可通过 `GameInteropReferenceDirectory` 和 `MelonLoaderReferenceDirectory` 覆盖 Mod 的编译引用位置。公共库的源码选择见 [构建说明](https://github.com/anosu/ModEngineering/blob/main/docs/CONVENTIONS.md)。
 
