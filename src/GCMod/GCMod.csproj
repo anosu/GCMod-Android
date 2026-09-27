@@ -5,8 +5,6 @@
         <Authors>Jitsu</Authors>
         <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
         <Nullable>disable</Nullable>
-        <!-- Unity 6 exposes an incomplete NullableAttribute in CoreModule. -->
-        <UseUnityCoreAlias>true</UseUnityCoreAlias>
         <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
     </PropertyGroup>
     <Import Project="$(ModRepositoryRoot)shared/ModEngineering/build/SharedDependencies.props" />

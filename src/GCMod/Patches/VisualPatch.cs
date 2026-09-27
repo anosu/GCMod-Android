@@ -1,9 +1,7 @@
-extern alias UnityCore;
-using UnityCore::UnityEngine;
 using HarmonyLib;
-
 using Il2CppDMM.OLG.Unity.Extensions.Novel;
 using Il2CppTMPro;
+using UnityEngine;
 using UnityEngine.UI;
 
 namespace GCMod.Patches;

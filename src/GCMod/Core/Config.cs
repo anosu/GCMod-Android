@@ -1,11 +1,9 @@
-extern alias UnityCore;
-
 using System;
 using System.Collections.Generic;
 using System.IO;
-using UnityCore::UnityEngine;
 using MelonLoader;
 using MelonLoader.Utils;
+using UnityEngine;
 using Utility.Notifications;
 
 namespace GCMod
