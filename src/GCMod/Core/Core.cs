@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.IO;
 using System.Net;
 using System.Net.Http;
@@ -25,9 +26,13 @@ namespace GCMod;
 public sealed class Core : MelonMod
 {
     private static HttpClient _httpClient;
+    private static AssetBundleLoader<TMP_FontAsset> _font;
+    private static IEnumerator _fontLoad;
+    private static object _fontCoroutine;
 
     public static MelonLogger.Instance Log { get; private set; }
-    public static TranslationManager Trans { get; private set; }
+    internal static TranslationManager Trans { get; private set; }
+    internal static TMP_FontAsset FontAsset => _font?.Asset;
 
     public override void OnInitializeMelon()
     {
@@ -83,9 +88,25 @@ public sealed class Core : MelonMod
                 fontPath = Path.Combine(MelonEnvironment.UserDataDirectory, fontPath);
             Trans = new TranslationManager(
                 CreateCache,
-                new AssetBundleLoader<TMP_FontAsset>(fontPath)
+                () =>
+                    new TranslationSettings(
+                        Config.Translation.Value,
+                        Config.AsyncMode.Value,
+                        Config.MasterDataTables.Value
+                    )
             );
-            Trans.Initialize();
+            _font = new AssetBundleLoader<TMP_FontAsset>(fontPath);
+            _fontLoad = _font.Load(
+                () =>
+                {
+                    if (!TMP_Settings.fallbackFontAssets.Contains(_font.Asset))
+                        TMP_Settings.fallbackFontAssets.Add(_font.Asset);
+                    Logger.Info($"Font loaded: {_font.Asset.name}");
+                },
+                error => Logger.Error($"Font load failed: {error.Message}")
+            );
+            _fontCoroutine = MelonCoroutines.Start(_fontLoad);
+            _ = Trans.LoadTranslationAsync();
             MasterDataPatch.JsonRewriter = (attribute, json) =>
                 Trans.TranslateMasterData(attribute?.Object, json);
             PatchManager.Initialize();
@@ -111,6 +132,16 @@ public sealed class Core : MelonMod
         }
         MasterDataPatch.JsonRewriter = null;
         Trans?.Dispose();
+        Trans = null;
+        Config.Shutdown();
+        if (_fontCoroutine != null)
+            MelonCoroutines.Stop(_fontCoroutine);
+        (_fontLoad as IDisposable)?.Dispose();
+        if (_font?.IsLoaded == true)
+            TMP_Settings.fallbackFontAssets.Remove(_font.Asset);
+        _font = null;
+        _fontLoad = null;
+        _fontCoroutine = null;
         _httpClient?.Dispose();
         _httpClient = null;
         Toast.Shutdown();

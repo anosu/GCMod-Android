@@ -1,5 +1,7 @@
 # GCMod Android
 
+本版本针对 [LemonLoader v0.7.4-android.3](https://github.com/LemonLoaderX/LemonLoader/releases/tag/v0.7.4-android.3) 构建，Mod 目标为 `net10.0`，需要 .NET 10 SDK；加载器运行时为 .NET 11，历史 `net6` 目录仍作为引用和安装路径。Loader 编译 DLL 来自正式发行包，不随 Mod ZIP 部署。使用 Patcher 安装该加载器时需 2.1.0 或更新版；从原始游戏 APK 准备新 payload，保留包名、签名及用户数据，勿混用旧运行时。游戏 Interop 保持各项目现有导出，运行验证需使用对应游戏版本。
+
 GCMod 7.0.0 的 LemonLoader Android 移植版，适用于「少女艺术绮谭 R」Unity IL2CPP ARM64 客户端。
 
 ## 功能
@@ -35,7 +37,7 @@ MelonLoader/
 
 | 分组 | 配置项 | 默认值 | 说明 |
 | --- | --- | --- | --- |
-| General | FrameRate | 60 | 正整数；非正数不覆盖游戏帧率 |
+| General | FrameRate | 60 | 正整数；无效值回退到 60 |
 | Battle | IsSkipCutin | false | 跳过大招动画 |
 | Translation | Enabled | true | 启用翻译 |
 | Translation | CDN | 下方翻译仓库的 Raw 地址 | 翻译数据源 |
@@ -107,3 +109,5 @@ CI 在构建前执行格式检查。规则为 4 空格缩进、100 列换行宽�
 ## 开发
 
 源码位于 `src/`，测试位于 `tests/`。项目配置由 `.csproj` 管理，依赖版本由 Git 子模块记录。构建、VS 联调和发布命令见[公共工程说明](https://github.com/anosu/ModEngineering/blob/main/docs/CONVENTIONS.md)。
+
+字体和 HTTP 由入口负责，翻译管理通过配置快照读取会话设置，保留 Android 异步默认值和主数据等待上限。MelonPreferences 约束在赋值及文件重载时修正资源地址、路径、帧率、透明度和十六进制颜色；无效颜色回退到原默认值。卸载解除配置订阅并停止字体协程，连续数值或文本编辑只写日志，布尔开关保留 Toast。ConfigurationManager 标签及桌面快捷键属于 PC 配置宿主，Android 继续编辑 UserData 配置文件并重启生效。

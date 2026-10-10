@@ -48,7 +48,7 @@ public static class PatchManager
     /// </summary>
     public static void ApplyTranslationFont(TextMeshProUGUI text)
     {
-        if (text != null && Core.Trans.Font.IsLoaded)
-            text.font = Core.Trans.Font.Asset;
+        if (text != null && Core.FontAsset != null)
+            text.font = Core.FontAsset;
     }
 }

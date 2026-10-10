@@ -19,7 +19,8 @@ namespace GCMod
 
     public static class Core
     {
-        public static Services.TranslationManager Trans;
+        internal static Services.TranslationManager Trans;
+        internal static Il2CppTMPro.TMP_FontAsset FontAsset => null;
     }
 }
 

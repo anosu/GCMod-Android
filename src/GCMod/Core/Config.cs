@@ -20,6 +20,7 @@ namespace GCMod
         );
         private static readonly Dictionary<string, MelonPreferences_Category> Categories = new();
         private static bool _initializing;
+        private static readonly List<Action> Subscriptions = new();
         public static Color NameTextColor { get; private set; } = Color.white;
         public static Color MessageTextColor { get; private set; } = Color.white;
         public static Color OutlineColor { get; private set; } = new(0.235f, 0.235f, 0.235f);
@@ -65,6 +66,7 @@ namespace GCMod
         /// </summary>
         public static void Initialize()
         {
+            Shutdown();
             _initializing = true;
             try
             {
@@ -216,15 +218,36 @@ namespace GCMod
                 category.SetFilePath(FilePath, false, false);
                 Categories.Add(section, category);
             }
-            var entry = category.CreateEntry(key, defaultValue, description, description);
-            entry.OnEntryValueChanged.Subscribe(
+            MelonLoader.Preferences.ValueValidator validator = null;
+            if (defaultValue is string text && section.StartsWith("Translation"))
+                validator = new ResourceStringValidator(text, key == "CDN");
+            if (key == "FrameRate")
+                validator = new PositiveIntValidator((int)(object)defaultValue);
+            if (key is "NameColor" or "MessageColor" or "OutlineColor")
+                validator = new AcceptableHexColor((string)(object)defaultValue);
+            if (key is "NormalAlpha" or "CgModeAlpha" or "OutlineWidth" or "OutlineSoftness")
+                validator = new MelonLoader.Preferences.ValueRange<float>(0f, 1f);
+            if (key == "FaceDilate")
+                validator = new MelonLoader.Preferences.ValueRange<float>(-1f, 1f);
+            var entry =
+                category.GetEntry<T>(key)
+                ?? category.CreateEntry(
+                    key,
+                    defaultValue,
+                    description,
+                    description,
+                    validator: validator
+                );
+            Subscribe(
+                entry,
                 (_, value) =>
                 {
                     if (_initializing)
                         return;
                     category.SaveToFile(false);
                     Logger.Info($"[{section}] {key} => {value}");
-                    Toast.Info($"[{section}]", $"{key} => {value}");
+                    if (value is bool)
+                        Toast.Info($"[{section}]", $"{key} => {value}");
                 }
             );
             return entry;
@@ -242,7 +265,7 @@ namespace GCMod
             foreach (var (entry, setter) in bindings)
             {
                 ParseAndSetColor(entry, setter);
-                entry.OnEntryValueChanged.Subscribe((_, _) => ParseAndSetColor(entry, setter));
+                Subscribe(entry, (_, _) => ParseAndSetColor(entry, setter));
             }
         }
 
@@ -262,6 +285,23 @@ namespace GCMod
                 return "#FFFFFF";
             hex = hex.Trim().TrimStart('#');
             return "#" + hex;
+        }
+
+        private static void Subscribe<T>(
+            MelonPreferences_Entry<T> entry,
+            LemonAction<T, T> callback
+        )
+        {
+            entry.OnEntryValueChanged.Subscribe(callback);
+            Subscriptions.Add(() => entry.OnEntryValueChanged.Unsubscribe(callback));
+        }
+
+        internal static void Shutdown()
+        {
+            _initializing = true;
+            foreach (var unsubscribe in Subscriptions)
+                unsubscribe();
+            Subscriptions.Clear();
         }
     }
 }

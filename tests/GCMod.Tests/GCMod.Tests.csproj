@@ -8,6 +8,10 @@
     </PropertyGroup>
     <ItemGroup>
         <Compile
+            Include="../../src/GCMod/Core/ResourceStringValidator.cs"
+            Link="Production/ResourceStringValidator.cs"
+        />
+        <Compile
             Include="../../shared/Utility/src/Utility/Caching/*.cs;../../shared/Utility/src/Utility/Cryptography/*.cs"
             Link="Shared/%(Filename)%(Extension)"
         />
